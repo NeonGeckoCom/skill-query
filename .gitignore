@@ -1,10 +1,12 @@
 # MycroftSkill runtime files
 settings.json
 
+.idea/
 # python compiled files
 __pycache__/
 *.py[cod]
 *$py.class
+*.pyc
 
 # Vim temp files
 .*.sw?

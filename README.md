@@ -9,7 +9,9 @@ Negotiates handling of questions by calling all registered Common Query Skills. 
 * "What is an Aardwark?"
 
 ## Credits
-Mycroft AI (@MycroftAI)
+[Mycroft AI](https://github.com/MycroftAI)
+[NeonDaniel](https://github.com/NeonDaniel)
+[NeonAndrii](https://github.com/NeonAndrii)
 
 ## Category
 **Information**
