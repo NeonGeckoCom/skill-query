@@ -41,7 +41,8 @@
 # limitations under the License.
 
 from neon_utils.skills.neon_fallback_skill import NeonFallbackSkill
-from mycroft.messagebus.message import Message
+from neon_utils.logger import LOG
+from mycroft_bus_client import Message
 from threading import Lock, Event
 
 EXTENSION_TIME = 10
@@ -90,8 +91,9 @@ class QuestionsAnswersSkill(NeonFallbackSkill):
             self.waiting.clear()
             self.bus.emit(message.forward('question:query',
                                           data={'phrase': utt}))
-            self.waiting.wait(self.timeout_time)
-            self.waiting.clear()
+            if not self.waiting.wait(self.timeout_time):
+                LOG.warning(f"timed out waiting for response to: {utt}")
+                self.waiting.clear()
 
             self._query_timeout(Message(msg_type="neon.query_timeout",
                                         data={'phrase': utt}, context=context))

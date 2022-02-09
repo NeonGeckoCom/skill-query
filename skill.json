@@ -12,7 +12,10 @@
     "warning": "",
     "systemDeps": false,
     "requirements": {
-        "python": [],
+        "python": [
+            "neon-utils~=0.6",
+            "mycroft-messagebus-client~=0.9"
+        ],
         "system": {},
         "skill": []
     },
