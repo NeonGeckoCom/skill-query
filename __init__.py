@@ -41,12 +41,13 @@
 # limitations under the License.
 
 from neon_utils.skills.neon_fallback_skill import NeonFallbackSkill
+from neon_utils.skills.common_query_skill import CQSMatchLevel
 from neon_utils.logger import LOG
 from mycroft_bus_client import Message
 from threading import Lock, Event
 
 EXTENSION_TIME = 10
-HIGHEST_POSSIBLE_SCORE = 1
+HIGHEST_POSSIBLE_SCORE = CQSMatchLevel.EXACT
 MODE_EXTENSION_TIME = {"quick": 5,
                        "default": EXTENSION_TIME}
 
@@ -81,7 +82,7 @@ class QuestionsAnswersSkill(NeonFallbackSkill):
             # TODO: use UID instead of utterance DM
             self.query_replies[utt] = []
             self.query_extensions[utt] = []
-            self.log.info('Searching for {}'.format(utt))
+            LOG.info(f'Searching for {utt}')
             skill_mode = self.user_config.get('response_mode',
                                               {}).get('speed_mode', 'default')
             extension_time = MODE_EXTENSION_TIME.get(skill_mode) or \
@@ -116,7 +117,7 @@ class QuestionsAnswersSkill(NeonFallbackSkill):
             elif search_phrase in self.query_extensions:
                 # Search complete, don't wait on this skill any longer
                 if answer and search_phrase in self.query_replies:
-                    self.log.info('Answer from {}'.format(skill_id))
+                    LOG.info(f'Answer from {skill_id}')
                     self.query_replies[search_phrase].append(message.data)
                     # if the confidence score is maximal, stop waiting
                     if message.data.get('conf') == HIGHEST_POSSIBLE_SCORE:
@@ -128,13 +129,13 @@ class QuestionsAnswersSkill(NeonFallbackSkill):
                     if not self.query_extensions[search_phrase]:
                         self.waiting.set()
             else:
-                self.log.warning('{} Answered too slowly,'
-                                 'will be ignored.'.format(skill_id))
+                LOG.warning(f'{format(skill_id)} Answered too slowly, '
+                            'will be ignored.')
 
     def _query_timeout(self, message):
         # Prevent any late-comers from retriggering this query handler
         with self.lock:
-            self.log.info('Timeout occurred check responses')
+            LOG.info('Timeout occurred check responses')
             search_phrase = message.data['phrase']
             if search_phrase in self.query_extensions:
                 self.query_extensions[search_phrase] = []
@@ -158,7 +159,7 @@ class QuestionsAnswersSkill(NeonFallbackSkill):
 
                 # invoke best match
                 self.speak(best['answer'], message=message)
-                self.log.info('Handling with: ' + str(best['skill_id']))
+                LOG.info(f"Handling with: {best['skill_id']}")
                 self.bus.emit(message.forward(
                     'question:action',
                     data={'skill_id': best['skill_id'],
