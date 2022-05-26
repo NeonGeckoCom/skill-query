@@ -47,7 +47,7 @@ from mycroft_bus_client import Message
 from threading import Lock, Event
 
 EXTENSION_TIME = 10
-HIGHEST_POSSIBLE_SCORE = CQSMatchLevel.EXACT
+HIGHEST_POSSIBLE_SCORE = CQSMatchLevel.EXACT.value
 MODE_EXTENSION_TIME = {"quick": 5,
                        "default": EXTENSION_TIME}
 
